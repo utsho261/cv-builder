@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://utsho261.github.io/cv-builder/sitemap.xml

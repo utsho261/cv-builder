@@ -1,0 +1,18 @@
+{
+  "title": "CV Studio — Free ATS Resume Builder & CV Maker | 100% Free 1-Page A4",
+  "description": "Create job-winning, ATS-friendly resumes effortlessly. Featuring 24 professional typographic templates, real-time ATS scoring, 1-page A4 guarantee, and clickable PDF links. 100% free by Utsho Roy.",
+  "language": "en",
+  "robots": {
+    "index": true
+  },
+  "openGraph": {
+    "image": "/utsho_profile.png"
+  },
+  "icons": {
+    "icon": "/utsho_profile.png"
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
