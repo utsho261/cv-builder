@@ -1,11 +1,11 @@
 import { CVData } from './types';
 import utshoPhoto from './assets/utsho_profile.png';
 
-// ─── 1. UTSHO ROY: BACKEND & API ENGINEER CV (Optimized for 1-Page) ───────────
+// ─── 1. UTSHO ROY: BACKEND & API ENGINEER CV (Junior & Intern Focus) ─────────
 export const utshoBackendCV: CVData = {
   personal: {
     name: 'Utsho Roy',
-    title: 'Backend & API Engineer | Python & Django Specialist',
+    title: 'Junior Backend Developer | Backend Engineering Intern',
     email: 'utshoroy5@gmail.com',
     phone: '+880 1797-732899',
     location: 'Mirpur 2, Dhaka, Bangladesh',
@@ -13,34 +13,34 @@ export const utshoBackendCV: CVData = {
     linkedin: 'linkedin.com/in/utshoroy261',
     github: 'github.com/utsho261',
     photo: utshoPhoto,
-    summary: 'Backend & API Engineer with a solid Computer Science foundation from BUBT. Specialized in architecting high-throughput Django REST APIs, relational database schemas (PostgreSQL, MySQL), and Celery distributed queues. Experienced in stateless SimpleJWT auth, 4-tier RBAC security, and query tuning cutting latency by 35%. Active competitive programmer with 154+ verified Codeforces solutions.',
+    summary: 'Computer Science undergraduate student at BUBT (CGPA 3.75) seeking an Internship or Junior Backend Developer position. Skilled in building RESTful APIs using Python, Django, Django REST Framework, and PostgreSQL. Solved 154+ algorithmic problems on Codeforces with a strong foundation in Data Structures and OOP. Passionate about writing clean code, learning new technologies, and contributing to real-world software products.',
   },
   experience: [
     {
       id: 'be-exp-1',
       company: 'CampusConnect (BUBT Capstone Project)',
-      position: 'Lead Backend Engineer',
-      startDate: 'Jan 2023',
+      position: 'Lead Backend Developer',
+      startDate: 'Jan 2024',
       endDate: 'Present',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Architected decoupled REST API backend powering university campus platform, supporting high-throughput student & faculty requests using Django 5.1 & DRF',
-        'Engineered stateless JWT authentication (SimpleJWT) with granular Role-Based Access Control (RBAC) across student, faculty, and administrative tiers',
-        'Optimized PostgreSQL schema with B-tree indexing, foreign key constraints, and select_related query tuning, slashing database latency by 35%',
-        'Integrated automated API documentation with Swagger/OpenAPI and configured modular Django app architecture ensuring rapid maintainability',
+        'Developed the backend REST API for a university platform using Django 5.1 and Django REST Framework',
+        'Implemented secure user login and role-based permissions (Student, Faculty, Admin) using SimpleJWT',
+        'Designed PostgreSQL database models and optimized queries, making API response times 35% faster',
+        'Tested and documented all API endpoints with Postman for smooth frontend integration',
       ],
     },
     {
       id: 'be-exp-2',
       company: 'Ostad Platform',
-      position: 'Backend Engineering Fellow (Python & Django)',
+      position: 'Backend Engineering Fellow (Trainee)',
       startDate: 'Jan 2025',
       endDate: 'Jan 2026',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Engineered Hospital Management System backend featuring 4-Tier RBAC, nested writable serializers, and Celery distributed task queues with Redis broker',
-        'Constructed automated unit tests and integration test suites using Pytest and Postman, ensuring robust API reliability across billing pipelines',
-        'Designed asynchronous PDF prescription & billing statement generation pipelines offloading long-running calculation workloads from web threads',
+        'Completed practical training on Python, Django, DRF, relational databases, and scalable system design',
+        'Built an enterprise Hospital Management API with appointment booking, doctor schedules, and billing',
+        'Used Celery and Redis to handle background tasks like calculating bills and generating reports',
       ],
     },
     {
@@ -51,9 +51,9 @@ export const utshoBackendCV: CVData = {
       endDate: 'Present',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Developed lightweight microservices utilizing FastAPI and Flask with MongoDB and SQLite for rapid prototype deployments',
-        'Implemented API security best practices including CORS policy controls, rate limiting, and parameter validation sanitizing incoming payloads',
-        'Streamlined local development and testing workflows with Docker containers and Docker Compose multi-service environments',
+        'Developed a personal finance tracker using Flask and MongoDB with JWT token verification',
+        'Built lightweight web services and practiced Docker containerization for local development',
+        'Implemented API security best practices including CORS controls and parameter validation',
       ],
     },
   ],
@@ -64,9 +64,9 @@ export const utshoBackendCV: CVData = {
       degree: 'Bachelor of Science (B.Sc.)',
       field: 'Computer Science & Engineering (CSE)',
       startDate: '2021',
-      endDate: 'Present',
-      gpa: '3.75',
-      honors: 'Capstone Lead: CampusConnect, Competitive Programming Squad',
+      endDate: 'Present (Running Student)',
+      gpa: '3.75 / 4.00',
+      honors: 'Capstone Team Lead, Competitive Programming Squad',
     },
     {
       id: 'be-edu-2',
@@ -87,39 +87,39 @@ export const utshoBackendCV: CVData = {
     },
     {
       id: 'be-skill-2',
-      category: 'Databases & Performance',
-      items: ['PostgreSQL', 'MySQL', 'MongoDB', 'SQLite', 'Django ORM', 'Database Indexing', 'Query Optimization', 'RBAC Security'],
+      category: 'Databases & ORM',
+      items: ['PostgreSQL', 'MySQL', 'MongoDB', 'SQLite', 'Django ORM', 'Database Indexing', 'Query Optimization'],
     },
     {
       id: 'be-skill-3',
-      category: 'DevOps & Architecture',
-      items: ['Git & GitHub', 'Docker Basics', 'Linux / Bash', 'Nginx Config', 'React 19 Integration', 'RESTful System Design'],
+      category: 'Tools & DevOps',
+      items: ['Git & GitHub', 'Postman', 'Docker (Basics)', 'Linux / Bash', 'Swagger / OpenAPI'],
     },
     {
       id: 'be-skill-4',
       category: 'Problem Solving & CS',
-      items: ['Codeforces (154+ Solved)', 'Algorithms & Data Structures', 'OOP', 'Pytest', 'Postman'],
+      items: ['Codeforces (154+ Solved)', 'Algorithms & Data Structures', 'OOP', 'Pytest'],
     },
   ],
   projects: [
     {
       id: 'be-proj-1',
       name: 'CampusConnect — Full-Stack University Platform',
-      description: 'Decoupled campus academic & social platform backend engineered with Django 5.1 & DRF, serving React 19 frontend with stateless SimpleJWT security and optimized PostgreSQL transactions.',
+      description: 'A decoupled university community platform. Built with Django REST Framework backend and React frontend. Features user authentication, academic resources, club events, and a blood donation network.',
       technologies: ['Django 5.1', 'DRF', 'Python', 'PostgreSQL', 'SimpleJWT', 'React 19'],
       url: 'github.com/utsho261/CampusConnect',
     },
     {
       id: 'be-proj-2',
-      name: 'Hospital Management System (API Architecture)',
-      description: 'Enterprise healthcare backend REST API with strict 4-Tier RBAC, nested multi-drug prescription serializers, and Celery asynchronous billing calculation pipelines.',
+      name: 'Hospital Management System (Healthcare REST API)',
+      description: 'A hospital backend REST API with 4 user roles (Admin, Doctor, Patient, Receptionist). Includes appointment booking, doctor schedules, and billing calculation pipelines.',
       technologies: ['Python', 'Django 5', 'DRF', 'SimpleJWT', '4-Tier RBAC', 'PostgreSQL'],
       url: 'github.com/utsho261/hospital_management',
     },
     {
       id: 'be-proj-3',
       name: 'Smart Expense Tracker & Financial Analytics API',
-      description: 'Personal finance budget tracker and visualization web API built with Flask and MongoDB. Features granular expense categorization and interactive Chart.js analytics.',
+      description: 'A personal finance web app that tracks daily expenses and income. Features category filtering, budget limits, and interactive spending charts.',
       technologies: ['Python', 'Flask', 'MongoDB', 'JWT Auth', 'REST API', 'Chart.js'],
       url: 'github.com/utsho261/smart-expense-tracker',
     },

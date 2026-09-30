@@ -376,7 +376,7 @@ export const PRESET_PROFILES: PresetProfile[] = [
   {
     id: 'utsho-backend',
     name: 'Utsho Roy (Backend)',
-    role: 'Backend & API Engineer (Python & Django)',
+    role: 'Junior Backend Developer (Python & Django)',
     avatarBg: '#059669',
     data: utshoBackendCV,
   },
