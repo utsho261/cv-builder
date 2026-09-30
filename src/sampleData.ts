@@ -81,9 +81,14 @@ export const utshoBackendCV: CVData = {
   ],
   skills: [
     {
+      id: 'be-skill-0',
+      category: 'Programming Languages',
+      items: ['Python', 'Java', 'C', 'C++'],
+    },
+    {
       id: 'be-skill-1',
       category: 'Backend & Frameworks',
-      items: ['Python 3', 'Django 5', 'Django REST Framework', 'FastAPI', 'Flask', 'REST APIs', 'SimpleJWT', 'Celery', 'Redis'],
+      items: ['Django 5', 'Django REST Framework', 'FastAPI', 'Flask', 'REST APIs', 'SimpleJWT', 'Celery', 'Redis'],
     },
     {
       id: 'be-skill-2',
