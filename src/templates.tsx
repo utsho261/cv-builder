@@ -225,11 +225,12 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
   );
 
   if (actualHref) {
+    const isMailOrTel = actualHref.startsWith('mailto:') || actualHref.startsWith('tel:');
     return (
       <a
         href={actualHref}
-        target="_blank"
-        rel="noopener noreferrer"
+        target={isMailOrTel ? undefined : '_blank'}
+        rel={isMailOrTel ? undefined : 'noopener noreferrer'}
         style={combinedStyle}
         className="cv-link-button"
         title={`Open ${label}`}
@@ -457,7 +458,21 @@ function SingleColumnCV({ data, theme }: { data: CVData; theme: SingleTheme }) {
           {projects.map((p, i) => (
             <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? sp(2.5) : 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                <span style={theme.jobTitle}>{p.name}</span>
+                {p.url ? (
+                  <a
+                    href={formatHref('url', p.url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-link-url={formatHref('url', p.url)}
+                    style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                    className="cv-link-button"
+                    title={`Open ${p.name}`}
+                  >
+                    {p.name}
+                  </a>
+                ) : (
+                  <span style={theme.jobTitle}>{p.name}</span>
+                )}
                 {p.url && <ProjectLinkButton url={p.url} />}
               </div>
               {p.technologies.length > 0 && <span style={{ ...theme.meta, marginLeft: sp(2) }}>{p.technologies.join(', ')}</span>}
@@ -1805,7 +1820,21 @@ function GoogleCV({ data }: { data: CVData }) {
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                  <span style={{ fontSize: 9.8, fontWeight: 600, color: '#1A73E8' }}>{exp.company}</span>
+                  {exp.company.toLowerCase().includes('campusconnect') ? (
+                    <a
+                      href="https://github.com/utsho261/CampusConnect"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-link-url="https://github.com/utsho261/CampusConnect"
+                      style={{ fontSize: 9.8, fontWeight: 600, color: '#1A73E8', textDecoration: 'none', cursor: 'pointer' }}
+                      title="Open CampusConnect GitHub Repository"
+                      className="cv-link-button"
+                    >
+                      {exp.company}
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: 9.8, fontWeight: 600, color: '#1A73E8' }}>{exp.company}</span>
+                  )}
                   {exp.location && <span style={{ fontSize: 8.2, color: '#5F6368' }}>{exp.location}</span>}
                 </div>
                 <ul style={{ margin: 0, paddingLeft: 10, listStyle: 'none' }}>
@@ -1830,7 +1859,21 @@ function GoogleCV({ data }: { data: CVData }) {
             {projects.map(p => (
               <div key={p.id}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 4 }}>
-                  <span style={{ fontSize: 10.4, fontWeight: 700, color: '#202124' }}>{p.name}</span>
+                  {p.url ? (
+                    <a
+                      href={formatHref('url', p.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-link-url={formatHref('url', p.url)}
+                      style={{ fontSize: 10.4, fontWeight: 700, color: '#202124', textDecoration: 'none', cursor: 'pointer' }}
+                      title={`Open ${p.name}`}
+                      className="cv-link-button"
+                    >
+                      {p.name}
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: 10.4, fontWeight: 700, color: '#202124' }}>{p.name}</span>
+                  )}
                   {p.url && <ProjectLinkButton url={p.url} variant="google" />}
                 </div>
                 {p.technologies.length > 0 && (
@@ -1881,7 +1924,21 @@ function GoogleCV({ data }: { data: CVData }) {
                   </div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 1 }}>
-                  <span style={{ fontSize: 9.2, fontWeight: 500, color: '#1A73E8' }}>{edu.institution}</span>
+                  {edu.institution.toLowerCase().includes('bubt') ? (
+                    <a
+                      href="https://www.bubt.edu.bd/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-link-url="https://www.bubt.edu.bd/"
+                      style={{ fontSize: 9.2, fontWeight: 500, color: '#1A73E8', textDecoration: 'none', cursor: 'pointer' }}
+                      title="Open BUBT Official Website"
+                      className="cv-link-button"
+                    >
+                      {edu.institution}
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: 9.2, fontWeight: 500, color: '#1A73E8' }}>{edu.institution}</span>
+                  )}
                   {edu.honors && (
                     <span style={{ fontSize: 8.2, color: '#5F6368', fontStyle: 'italic' }}>
                       {edu.honors}
@@ -1903,24 +1960,59 @@ function GoogleCV({ data }: { data: CVData }) {
               <div>
                 <GoogleSectionHeader label="Certifications & Achievements" icon={<Award size={13} />} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4.5 }}>
-                  {certifications.map(c => (
-                    <div
-                      key={c.id}
-                      style={{
-                        background: '#F8FAFD',
-                        border: '1px solid #E8EAED',
-                        borderRadius: 4,
-                        padding: '4px 8px',
-                      }}
-                    >
-                      <div style={{ fontSize: 8.4, fontWeight: 700, color: '#202124', lineHeight: 1.3 }}>
-                        {c.name}
+                  {certifications.map(c => {
+                    const isCf = c.name.toLowerCase().includes('codeforces') || c.issuer.toLowerCase().includes('codeforces');
+                    const isOstad = c.name.toLowerCase().includes('ostad') || c.issuer.toLowerCase().includes('ostad');
+                    const certUrl = isCf ? 'https://codeforces.com/profile/UtshoRoy' : isOstad ? 'https://ostad.app' : '';
+
+                    return (
+                      <div
+                        key={c.id}
+                        style={{
+                          background: '#F8FAFD',
+                          border: '1px solid #E8EAED',
+                          borderRadius: 4,
+                          padding: '4px 8px',
+                        }}
+                      >
+                        <div style={{ fontSize: 8.4, fontWeight: 700, color: '#202124', lineHeight: 1.3 }}>
+                          {certUrl ? (
+                            <a
+                              href={certUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-link-url={certUrl}
+                              style={{ color: '#202124', textDecoration: 'none', cursor: 'pointer' }}
+                              title={`Open ${c.name}`}
+                              className="cv-link-button"
+                            >
+                              {c.name}
+                            </a>
+                          ) : (
+                            c.name
+                          )}
+                        </div>
+                        <div style={{ fontSize: 7.6, color: '#1A73E8', fontWeight: 500 }}>
+                          {certUrl ? (
+                            <a
+                              href={certUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-link-url={certUrl}
+                              style={{ color: '#1A73E8', textDecoration: 'none', cursor: 'pointer' }}
+                              title={`Open ${c.issuer}`}
+                              className="cv-link-button"
+                            >
+                              {c.issuer}
+                            </a>
+                          ) : (
+                            c.issuer
+                          )}{' '}
+                          {c.date ? `· ${c.date}` : ''}
+                        </div>
                       </div>
-                      <div style={{ fontSize: 7.6, color: '#1A73E8', fontWeight: 500 }}>
-                        {c.issuer} {c.date ? `· ${c.date}` : ''}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
