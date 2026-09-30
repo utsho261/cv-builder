@@ -1471,6 +1471,22 @@ function BuilderPage({
         logging: false,
         width: 794,
         height: 1123,
+        onclone: (clonedDoc: Document) => {
+          // Fix html2canvas upward SVG icon shift:
+          // In html2canvas, SVG icons inside flex buttons tend to align to top (y=0)
+          // instead of optical vertical centering, which makes them float upwards in downloaded PDFs.
+          const iconWrappers = clonedDoc.querySelectorAll<HTMLElement>('.cv-icon-wrapper');
+          iconWrappers.forEach(node => {
+            node.style.position = 'relative';
+            node.style.top = '1.8px';
+          });
+
+          const sectionIcons = clonedDoc.querySelectorAll<HTMLElement>('.cv-section-icon');
+          sectionIcons.forEach(node => {
+            node.style.position = 'relative';
+            node.style.top = '1.5px';
+          });
+        },
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);

@@ -195,6 +195,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
   const innerContent = (
     <>
       <span
+        className="cv-icon-wrapper"
         style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -203,6 +204,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
           height: 12,
           flexShrink: 0,
           lineHeight: 1,
+          verticalAlign: 'middle',
         }}
       >
         {renderIcon()}
@@ -1607,7 +1609,22 @@ function GoogleSectionHeader({
 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 7, marginTop: 3 }}>
-      {icon && <span style={{ color: '#1A73E8', display: 'flex', alignItems: 'center', flexShrink: 0 }}>{icon}</span>}
+      {icon && (
+        <span
+          className="cv-section-icon"
+          style={{
+            color: '#1A73E8',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            lineHeight: 1,
+            verticalAlign: 'middle',
+          }}
+        >
+          {icon}
+        </span>
+      )}
       <span
         style={{
           fontFamily: "'Roboto', 'Inter', sans-serif",

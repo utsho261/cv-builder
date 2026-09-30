@@ -141,7 +141,7 @@ a.cv-link-button:focus,
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  line-height: 1 !important;
+  line-height: normal;
   text-decoration: none !important;
   transition: all 0.15s ease;
   cursor: pointer;
@@ -156,6 +156,34 @@ a.cv-link-button:focus,
 .cv-link-button:active {
   transform: translateY(0);
   text-decoration: none !important;
+}
+
+.cv-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.cv-icon-wrapper svg {
+  display: block;
+  vertical-align: middle;
+}
+
+.cv-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.cv-section-icon svg {
+  display: block;
+  vertical-align: middle;
 }
 
 /* Print Setup for perfect Single-Page A4 */
