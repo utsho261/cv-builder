@@ -13,7 +13,7 @@ export const utshoBackendCV: CVData = {
     linkedin: 'linkedin.com/in/utshoroy261',
     github: 'github.com/utsho261',
     photo: utshoPhoto,
-    summary: 'Computer Science undergraduate student at BUBT (CGPA 3.75) seeking an Internship or Junior Backend Developer position. Skilled in building RESTful APIs using Python, Django, Django REST Framework, and PostgreSQL. Solved 154+ algorithmic problems on Codeforces with a strong foundation in Data Structures and OOP. Passionate about writing clean code, learning new technologies, and contributing to real-world software products.',
+    summary: 'Computer Science undergraduate at BUBT (CGPA 3.75) seeking an Internship or Junior Backend Developer role. Hands-on experience architecting secure RESTful APIs using Python, Django, Django REST Framework, and PostgreSQL. Strong analytical problem solver with 154+ algorithmic challenges solved on Codeforces and a solid grasp of Data Structures and OOP. Passionate about writing clean, maintainable code and eager to contribute to real-world software products.',
   },
   experience: [
     {
@@ -51,9 +51,9 @@ export const utshoBackendCV: CVData = {
       endDate: 'Present',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Built a RESTful personal finance API using Flask and MongoDB, implementing secure JWT authentication and dynamic expense analytics',
-        'Containerized backend services with Docker and Docker Compose to ensure consistent local development and isolated test environments',
-        'Strengthened API security and reliability by enforcing strict CORS policies, request rate limiting, and robust input validation',
+        'Developed a RESTful personal finance API using Flask and MongoDB, implementing stateless JWT authentication and dynamic expense analytics',
+        'Architected lightweight web services with modular routing and schema validation, ensuring reliable JSON payloads and sub-second response times',
+        'Hardened API security and integrity by enforcing strict CORS policies, token expiration lifecycles, and defensive parameter validation',
       ],
     },
   ],
@@ -124,8 +124,8 @@ export const utshoBackendCV: CVData = {
     {
       id: 'be-proj-3',
       name: 'Smart Expense Tracker & Financial Analytics API',
-      description: 'A personal finance web app that tracks daily expenses and income. Features category filtering, budget limits, and interactive spending charts.',
-      technologies: ['Python', 'Flask', 'MongoDB', 'JWT Auth', 'REST API', 'Chart.js'],
+      description: 'A personal finance backend and web application built with Flask and MongoDB. Features secure JWT authentication, category-based transaction tracking, budget thresholds, and dynamic financial summaries.',
+      technologies: ['Python', 'Flask', 'MongoDB', 'JWT Auth', 'REST API', 'CORS Security'],
       url: 'github.com/utsho261/smart-expense-tracker',
     },
   ],
