@@ -51,9 +51,9 @@ export const utshoBackendCV: CVData = {
       endDate: 'Present',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Developed a personal finance tracker using Flask and MongoDB with JWT token verification',
-        'Built lightweight web services and practiced Docker containerization for local development',
-        'Implemented API security best practices including CORS controls and parameter validation',
+        'Built a RESTful personal finance API using Flask and MongoDB, implementing secure JWT authentication and dynamic expense analytics',
+        'Containerized backend services with Docker and Docker Compose to ensure consistent local development and isolated test environments',
+        'Strengthened API security and reliability by enforcing strict CORS policies, request rate limiting, and robust input validation',
       ],
     },
   ],
