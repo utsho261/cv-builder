@@ -1477,14 +1477,16 @@ function BuilderPage({
           // instead of optical vertical centering, which makes them float upwards in downloaded PDFs.
           const iconWrappers = clonedDoc.querySelectorAll<HTMLElement>('.cv-icon-wrapper');
           iconWrappers.forEach(node => {
-            node.style.position = 'relative';
-            node.style.top = '1.8px';
+            node.style.marginTop = '2px';
+            node.style.display = 'inline-flex';
+            node.style.verticalAlign = 'middle';
           });
 
           const sectionIcons = clonedDoc.querySelectorAll<HTMLElement>('.cv-section-icon');
           sectionIcons.forEach(node => {
-            node.style.position = 'relative';
-            node.style.top = '1.5px';
+            node.style.marginTop = '3px';
+            node.style.display = 'inline-flex';
+            node.style.verticalAlign = 'middle';
           });
         },
       });

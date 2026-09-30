@@ -125,9 +125,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
-    height: 22,
-    minHeight: 22,
-    padding: '0 8px',
+    padding: '3px 8px',
     borderRadius: 4,
     fontSize: 8.5,
     fontWeight: 500,
@@ -148,7 +146,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       border: '1px solid #D2E3FC',
       borderRadius: 11,
       fontWeight: 500,
-      padding: '0 9px',
+      padding: '3px 9px',
     };
   } else if (variant === 'microsoft') {
     baseStyle = {
@@ -157,7 +155,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       color: '#FFFFFF',
       border: '1px solid rgba(255, 255, 255, 0.3)',
       borderRadius: 3,
-      padding: '0 8px',
+      padding: '3px 8px',
     };
   } else if (variant === 'sidebar') {
     baseStyle = {
@@ -169,7 +167,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       width: '100%',
       justifyContent: 'flex-start',
       marginBottom: 5,
-      padding: '0 8px',
+      padding: '3px 8px',
       fontSize: 8,
     };
   } else if (variant === 'dark') {
@@ -179,6 +177,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       color: '#F0EDE8',
       border: '1px solid rgba(255, 255, 255, 0.2)',
       borderRadius: 4,
+      padding: '3px 8px',
     };
   } else {
     baseStyle = {
@@ -187,6 +186,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       color: '#1a1a1a',
       border: '1px solid rgba(20, 18, 16, 0.14)',
       borderRadius: 4,
+      padding: '3px 8px',
     };
   }
 
@@ -205,6 +205,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
           flexShrink: 0,
           lineHeight: 1,
           verticalAlign: 'middle',
+          marginTop: 1,
         }}
       >
         {renderIcon()}
@@ -1620,6 +1621,7 @@ function GoogleSectionHeader({
             flexShrink: 0,
             lineHeight: 1,
             verticalAlign: 'middle',
+            marginTop: 2.5,
           }}
         >
           {icon}
@@ -1633,6 +1635,9 @@ function GoogleSectionHeader({
           letterSpacing: '0.12em',
           textTransform: 'uppercase',
           color: '#1A73E8',
+          lineHeight: 1,
+          display: 'inline-flex',
+          alignItems: 'center',
         }}
       >
         {label}
