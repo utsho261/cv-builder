@@ -1432,11 +1432,55 @@ function BuilderPage({
       document.body.appendChild(el);
     }
     setPrintMountNode(el);
+
+    const handleBefore = () => {
+      const p = document.getElementById('print-root');
+      if (p) {
+        p.style.position = 'relative';
+        p.style.left = '0px';
+        p.style.top = '0px';
+        p.style.zIndex = '9999';
+        p.style.pointerEvents = 'auto';
+      }
+    };
+    const handleAfter = () => {
+      const p = document.getElementById('print-root');
+      if (p) {
+        p.style.position = 'fixed';
+        p.style.left = '-9999px';
+        p.style.zIndex = '-9999';
+        p.style.pointerEvents = 'none';
+      }
+    };
+
+    window.addEventListener('beforeprint', handleBefore);
+    window.addEventListener('afterprint', handleAfter);
+    return () => {
+      window.removeEventListener('beforeprint', handleBefore);
+      window.removeEventListener('afterprint', handleAfter);
+    };
   }, []);
 
-  // Handle PDF Print / Save as PDF (Native Browser Vector Print)
+  // Handle PDF Print / Save as PDF (Native Browser Vector Print with 100% Clickable Links)
   const handlePrint = useCallback(() => {
+    const printRoot = document.getElementById('print-root');
+    if (printRoot) {
+      printRoot.style.position = 'relative';
+      printRoot.style.left = '0px';
+      printRoot.style.top = '0px';
+      printRoot.style.zIndex = '9999';
+      printRoot.style.pointerEvents = 'auto';
+    }
+    showToast('In the print dialog, select Destination: "Save as PDF" for crystal-clear vector quality & 100% clickable links!');
     window.print();
+    setTimeout(() => {
+      if (printRoot) {
+        printRoot.style.position = 'fixed';
+        printRoot.style.left = '-9999px';
+        printRoot.style.zIndex = '-9999';
+        printRoot.style.pointerEvents = 'none';
+      }
+    }, 2000);
   }, []);
 
   // Direct High-Resolution 1-Page PDF Download with REAL Clickable Link Buttons
@@ -1472,23 +1516,12 @@ function BuilderPage({
         width: 794,
         height: 1123,
         onclone: (clonedDoc: Document) => {
-          // Fix html2canvas upward SVG icon shift:
-          // In html2canvas, SVG icons inside flex buttons tend to align to top (y=0)
-          // instead of optical vertical centering, which makes them float upwards in downloaded PDFs.
-          // Calibrated offset: 4.5px down for pill link button icons, 3.5px for section headers
-          const iconWrappers = clonedDoc.querySelectorAll<HTMLElement>('.cv-icon-wrapper');
-          iconWrappers.forEach(node => {
-            node.style.position = 'relative';
-            node.style.top = '4.5px';
-            node.style.marginTop = '0px';
-          });
-
-          const sectionIcons = clonedDoc.querySelectorAll<HTMLElement>('.cv-section-icon');
-          sectionIcons.forEach(node => {
-            node.style.position = 'relative';
-            node.style.top = '3.5px';
-            node.style.marginTop = '0px';
-          });
+          const clonedPrintRoot = clonedDoc.getElementById('print-root');
+          if (clonedPrintRoot) {
+            clonedPrintRoot.style.position = 'absolute';
+            clonedPrintRoot.style.left = '0px';
+            clonedPrintRoot.style.top = '0px';
+          }
         },
       });
 
@@ -1528,7 +1561,7 @@ function BuilderPage({
 
       const cleanName = (cvData.personal.name || 'CV').replace(/\s+/g, '_');
       doc.save(`${cleanName}_Resume.pdf`);
-      showToast('✓ 1-Page PDF downloaded! All link buttons are clickable.');
+      showToast('✓ 1-Page PDF downloaded! You can also use "Print" (Save as PDF) for 100% vector text.');
     } catch (err) {
       console.error('PDF export error:', err);
       showToast('Opening print dialog to Save as PDF...');

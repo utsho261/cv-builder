@@ -135,7 +135,8 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
     boxSizing: 'border-box',
     maxWidth: '100%',
     verticalAlign: 'middle',
-    userSelect: 'none',
+    userSelect: 'text',
+    pointerEvents: 'auto',
   };
 
   if (variant === 'google') {
@@ -205,7 +206,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
           flexShrink: 0,
           lineHeight: 1,
           verticalAlign: 'middle',
-          marginTop: 1,
+          marginTop: 1.5,
         }}
       >
         {renderIcon()}
@@ -1621,7 +1622,7 @@ function GoogleSectionHeader({
             flexShrink: 0,
             lineHeight: 1,
             verticalAlign: 'middle',
-            marginTop: 2.5,
+            marginTop: 1.5,
           }}
         >
           {icon}
