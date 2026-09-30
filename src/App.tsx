@@ -4128,7 +4128,7 @@ function FormPanel({
                   </span>
                   {edu.gpa && (
                     <span style={{ fontSize: 9.5, color: '#1E40AF', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '1px 5px', borderRadius: 4, fontWeight: 600 }}>
-                      GPA {edu.gpa}
+                      {/cgpa/i.test(edu.gpa) ? edu.gpa : (edu.degree?.toLowerCase().includes('b.sc') || edu.institution?.toLowerCase().includes('bubt') ? `CGPA ${edu.gpa}` : `GPA ${edu.gpa}`)}
                     </span>
                   )}
                 </div>
@@ -4236,7 +4236,7 @@ function FormPanel({
                       />
                     </div>
                     <div>
-                      <label style={labelStyle}>GPA (optional)</label>
+                      <label style={labelStyle}>CGPA / GPA (optional)</label>
                       <input
                         value={edu.gpa}
                         onChange={e =>
@@ -4266,7 +4266,7 @@ function FormPanel({
                         })
                       }
                       style={inputStyle}
-                      placeholder="Capstone Lead: CampusConnect, Competitive Programming Squad"
+                      placeholder="SDP-400 Lead: CampusConnect, Competitive Programming Squad"
                     />
                   </div>
                 </div>

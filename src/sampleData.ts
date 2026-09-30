@@ -18,13 +18,13 @@ export const utshoBackendCV: CVData = {
   experience: [
     {
       id: 'be-exp-1',
-      company: 'CampusConnect (BUBT Capstone Project)',
+      company: 'CampusConnect (BUBT SDP-400 Project)',
       position: 'Lead Backend Developer',
       startDate: 'Jan 2024',
       endDate: 'Present',
       location: 'Dhaka, Bangladesh',
       bullets: [
-        'Developed the backend REST API for a university platform using Django 5.1 and Django REST Framework',
+        'Developed the backend REST API for a university platform (SDP-400 course project) using Django 5.1 and Django REST Framework',
         'Implemented secure user login and role-based permissions (Student, Faculty, Admin) using SimpleJWT',
         'Designed PostgreSQL database models and optimized queries, making API response times 35% faster',
         'Tested and documented all API endpoints with Postman for smooth frontend integration',
@@ -66,7 +66,7 @@ export const utshoBackendCV: CVData = {
       startDate: '2021',
       endDate: 'Present (Running Student)',
       gpa: '3.75 / 4.00',
-      honors: 'Capstone Team Lead, Competitive Programming Squad',
+      honors: 'SDP-400 Lead: CampusConnect, Competitive Programming Squad',
     },
     {
       id: 'be-edu-2',
@@ -104,8 +104,8 @@ export const utshoBackendCV: CVData = {
   projects: [
     {
       id: 'be-proj-1',
-      name: 'CampusConnect — Full-Stack University Platform',
-      description: 'A decoupled university community platform. Built with Django REST Framework backend and React frontend. Features user authentication, academic resources, club events, and a blood donation network.',
+      name: 'CampusConnect — University Platform (BUBT SDP-400)',
+      description: 'A decoupled university community platform developed as a BUBT SDP-400 course project. Built with Django REST Framework backend and React frontend. Features user authentication, academic resources, club events, and a blood donation network.',
       technologies: ['Django 5.1', 'DRF', 'Python', 'PostgreSQL', 'SimpleJWT', 'React 19'],
       url: 'github.com/utsho261/CampusConnect',
     },
@@ -138,10 +138,7 @@ export const utshoBackendCV: CVData = {
       date: '2024',
     },
   ],
-  languages: [
-    { id: 'be-lang-1', language: 'Bengali', level: 'Native' },
-    { id: 'be-lang-2', language: 'English', level: 'Professional Working Proficiency' },
-  ],
+  languages: [],
 };
 
 // ─── 2. UTSHO ROY: NATIVE ANDROID DEVELOPER CV (Optimized for 1-Page) ─────────

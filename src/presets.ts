@@ -464,7 +464,9 @@ export function formatCVAsPlainText(data: CVData): string {
       lines.push(`${edu.degree}${edu.field ? `, ${edu.field}` : ''}`);
       lines.push(`${edu.institution} (${edu.startDate} – ${edu.endDate})`);
       if (edu.gpa || edu.honors) {
-        lines.push([edu.gpa && `GPA: ${edu.gpa}`, edu.honors].filter(Boolean).join(' | '));
+        const isUni = /b\.?sc|bachelor|undergraduate|master|university|bubt/i.test(`${edu.degree} ${edu.institution}`);
+        const gpaStr = edu.gpa ? (/cgpa/i.test(edu.gpa) ? edu.gpa : `${isUni ? 'CGPA' : 'GPA'}: ${edu.gpa}`) : '';
+        lines.push([gpaStr, edu.honors].filter(Boolean).join(' | '));
       }
       lines.push('');
     });

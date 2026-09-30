@@ -362,6 +362,14 @@ function PhotoSquare({ src, size, border }: { src: string; size: number; border?
   );
 }
 
+function formatGpaDisplay(gpa: string, degree: string = '', institution: string = ''): string {
+  if (!gpa || !gpa.trim()) return '';
+  const trimmed = gpa.trim();
+  if (/^(cgpa|gpa)/i.test(trimmed)) return trimmed;
+  const isUniversity = /b\.?sc|bachelor|undergraduate|master|university|bubt/i.test(`${degree} ${institution}`);
+  return `${isUniversity ? 'CGPA' : 'GPA'}: ${trimmed}`;
+}
+
 function SingleColumnCV({ data, theme }: { data: CVData; theme: SingleTheme }) {
   const { personal, experience, education, skills, projects, certifications, languages } = data;
   return (
@@ -424,7 +432,7 @@ function SingleColumnCV({ data, theme }: { data: CVData; theme: SingleTheme }) {
               </div>
               <div style={theme.institution}>{edu.institution}</div>
               {(edu.gpa || edu.honors) && (
-                <div style={theme.meta}>{[edu.gpa && `GPA: ${edu.gpa}`, edu.honors].filter(Boolean).join(' · ')}</div>
+                <div style={theme.meta}>{[formatGpaDisplay(edu.gpa, edu.degree, edu.institution), edu.honors].filter(Boolean).join(' · ')}</div>
               )}
             </div>
           ))}
@@ -624,7 +632,7 @@ function SidebarCV({ data, theme }: { data: CVData; theme: SidebarTheme }) {
                 </div>
                 <div style={theme.company}>{edu.institution}</div>
                 {(edu.gpa || edu.honors) && (
-                  <div style={theme.meta}>{[edu.gpa && `GPA: ${edu.gpa}`, edu.honors].filter(Boolean).join(' · ')}</div>
+                  <div style={theme.meta}>{[formatGpaDisplay(edu.gpa, edu.degree, edu.institution), edu.honors].filter(Boolean).join(' · ')}</div>
                 )}
               </div>
             ))}
@@ -1867,7 +1875,7 @@ function GoogleCV({ data }: { data: CVData }) {
                     <span style={{ fontSize: 8.2, color: '#5F6368' }}>{edu.startDate} – {edu.endDate}</span>
                     {edu.gpa && (
                       <span style={{ fontSize: 7.8, fontWeight: 600, color: '#174EA6', background: '#E8F0FE', border: '1px solid #D2E3FC', padding: '1px 6px', borderRadius: 3 }}>
-                        GPA: {edu.gpa}
+                        {formatGpaDisplay(edu.gpa, edu.degree, edu.institution)}
                       </span>
                     )}
                   </div>
@@ -1886,86 +1894,64 @@ function GoogleCV({ data }: { data: CVData }) {
         </div>
       )}
 
-      {/* 7. Certifications, Achievements & Languages (Full-Width Bottom Anchor) */}
-      <div style={{ flexShrink: 0 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
-          {/* Certifications */}
-          {certifications.length > 0 && (
-            <div>
-              <GoogleSectionHeader label="Certifications & Achievements" icon={<Award size={13} />} />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4.5 }}>
-                {certifications.map(c => (
-                  <div
-                    key={c.id}
-                    style={{
-                      background: '#F8FAFD',
-                      border: '1px solid #E8EAED',
-                      borderRadius: 4,
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <div style={{ fontSize: 8.4, fontWeight: 700, color: '#202124', lineHeight: 1.3 }}>
-                      {c.name}
-                    </div>
-                    <div style={{ fontSize: 7.6, color: '#1A73E8', fontWeight: 500 }}>
-                      {c.issuer} {c.date ? `· ${c.date}` : ''}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Languages & Core Competencies */}
-          <div>
-            {languages.length > 0 && (
-              <div style={{ marginBottom: 6 }}>
-                <GoogleSectionHeader label="Languages" icon={<Languages size={13} />} />
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {languages.map(l => (
-                    <span
-                      key={l.id}
+      {/* 7. Certifications & Achievements (Full-Width Bottom Anchor) */}
+      {(certifications.length > 0 || languages.length > 0) && (
+        <div style={{ flexShrink: 0 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: languages.length > 0 ? '1.2fr 1fr' : '1fr', gap: 20 }}>
+            {/* Certifications */}
+            {certifications.length > 0 && (
+              <div>
+                <GoogleSectionHeader label="Certifications & Achievements" icon={<Award size={13} />} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4.5 }}>
+                  {certifications.map(c => (
+                    <div
+                      key={c.id}
                       style={{
-                        fontSize: 8.2,
-                        color: '#3C4043',
-                        background: '#F1F3F4',
-                        padding: '2px 8px',
-                        borderRadius: 3,
+                        background: '#F8FAFD',
+                        border: '1px solid #E8EAED',
+                        borderRadius: 4,
+                        padding: '4px 8px',
                       }}
                     >
-                      <strong>{l.language}:</strong> {l.level}
-                    </span>
+                      <div style={{ fontSize: 8.4, fontWeight: 700, color: '#202124', lineHeight: 1.3 }}>
+                        {c.name}
+                      </div>
+                      <div style={{ fontSize: 7.6, color: '#1A73E8', fontWeight: 500 }}>
+                        {c.issuer} {c.date ? `· ${c.date}` : ''}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Core ATS Competencies */}
-            <div>
-              <div style={{ fontSize: 7.6, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#5F6368', marginBottom: 4, marginTop: 4 }}>
-                Core Competencies
+            {/* Languages */}
+            {languages.length > 0 && (
+              <div>
+                <div style={{ marginBottom: 6 }}>
+                  <GoogleSectionHeader label="Languages" icon={<Languages size={13} />} />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {languages.map(l => (
+                      <span
+                        key={l.id}
+                        style={{
+                          fontSize: 8.2,
+                          color: '#3C4043',
+                          background: '#F1F3F4',
+                          padding: '2px 8px',
+                          borderRadius: 3,
+                        }}
+                      >
+                        <strong>{l.language}:</strong> {l.level}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3.5 }}>
-                {['System Architecture', 'REST & gRPC APIs', 'Microservices', 'CI/CD Pipelines', 'Database Tuning'].map(comp => (
-                  <span
-                    key={comp}
-                    style={{
-                      fontSize: 7.4,
-                      color: '#174EA6',
-                      background: '#F8FAFD',
-                      border: '1px solid #D2E3FC',
-                      padding: '1px 5px',
-                      borderRadius: 3,
-                    }}
-                  >
-                    ✓ {comp}
-                  </span>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -2138,10 +2124,10 @@ function MicrosoftCV({ data }: { data: CVData }) {
             boxSizing: 'border-box',
           }}
         >
-          {/* Core Competencies / Skills */}
+          {/* Technical Skills */}
           {skills.length > 0 && (
             <div style={{ marginBottom: 18 }}>
-              <MicrosoftSectionHeader label="Core Competencies" />
+              <MicrosoftSectionHeader label="Technical Skills" />
               {skills.map(sg => (
                 <div key={sg.id} style={{ marginBottom: 10 }}>
                   <div style={{ fontSize: 9, fontWeight: 700, color: '#242424', marginBottom: 4 }}>
