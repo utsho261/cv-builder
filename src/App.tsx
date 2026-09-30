@@ -1475,18 +1475,19 @@ function BuilderPage({
           // Fix html2canvas upward SVG icon shift:
           // In html2canvas, SVG icons inside flex buttons tend to align to top (y=0)
           // instead of optical vertical centering, which makes them float upwards in downloaded PDFs.
+          // Calibrated offset: 4.5px down for pill link button icons, 3.5px for section headers
           const iconWrappers = clonedDoc.querySelectorAll<HTMLElement>('.cv-icon-wrapper');
           iconWrappers.forEach(node => {
-            node.style.marginTop = '2px';
-            node.style.display = 'inline-flex';
-            node.style.verticalAlign = 'middle';
+            node.style.position = 'relative';
+            node.style.top = '4.5px';
+            node.style.marginTop = '0px';
           });
 
           const sectionIcons = clonedDoc.querySelectorAll<HTMLElement>('.cv-section-icon');
           sectionIcons.forEach(node => {
-            node.style.marginTop = '3px';
-            node.style.display = 'inline-flex';
-            node.style.verticalAlign = 'middle';
+            node.style.position = 'relative';
+            node.style.top = '3.5px';
+            node.style.marginTop = '0px';
           });
         },
       });
@@ -3265,13 +3266,6 @@ function BuilderPage({
         </div>
       )}
 
-      {/* Off-screen Portal for Native Print and High-Res Clean PDF Export */}
-      {printMountNode && createPortal(
-        <div id="print-target-container">
-          <TemplateRenderer data={cvData} templateId={selectedTemplate} />
-        </div>,
-        printMountNode
-      )}
     </div>
   );
 }

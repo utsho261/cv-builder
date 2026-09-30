@@ -170,6 +170,7 @@ a.cv-link-button:focus,
 .cv-icon-wrapper svg {
   display: block;
   vertical-align: middle;
+  overflow: visible;
 }
 
 .cv-section-icon {
@@ -184,6 +185,7 @@ a.cv-link-button:focus,
 .cv-section-icon svg {
   display: block;
   vertical-align: middle;
+  overflow: visible;
 }
 
 /* Print Setup for perfect Single-Page A4 */
