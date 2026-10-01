@@ -29,6 +29,14 @@ export async function exportCVToPDF(
   const prevPointerEvents = printRoot?.style.pointerEvents || '';
   const prevOpacity = printRoot?.style.opacity || '';
 
+  // Inject font metric fix style to prevent Tailwind img { display: block } baseline inflation
+  const fontMetricStyle = document.createElement('style');
+  fontMetricStyle.id = 'html2canvas-fontmetrics-fix';
+  fontMetricStyle.innerHTML = `
+    img { display: inline-block !important; }
+  `;
+  document.head.appendChild(fontMetricStyle);
+
   try {
     // Bring print container into coordinate space safely behind UI
     if (printRoot) {
@@ -41,7 +49,10 @@ export async function exportCVToPDF(
       printRoot.style.overflow = 'hidden';
     }
 
-    // Wait a frame for layout to settle
+    // Wait for fonts and layout to settle
+    if (document.fonts) {
+      await document.fonts.ready;
+    }
     await new Promise((resolve) => setTimeout(resolve, 150));
 
     const name = cvData?.personal?.name || 'Resume';
@@ -55,7 +66,6 @@ export async function exportCVToPDF(
       html2canvas: {
         scale: 2.5,
         useCORS: true,
-        letterRendering: true,
         logging: false,
         backgroundColor: '#FFFFFF',
         width: 794,
@@ -64,6 +74,13 @@ export async function exportCVToPDF(
         scrollY: 0,
         x: 0,
         y: 0,
+        onclone: (clonedDoc: Document) => {
+          const style = clonedDoc.createElement('style');
+          style.innerHTML = `
+            img { display: inline-block !important; }
+          `;
+          clonedDoc.head.appendChild(style);
+        },
       },
       jsPDF: {
         unit: 'mm',
@@ -81,6 +98,9 @@ export async function exportCVToPDF(
     console.error('PDF export failed:', error);
     throw error;
   } finally {
+    // Clean up font metrics fix
+    document.getElementById('html2canvas-fontmetrics-fix')?.remove();
+
     // Restore previous styles
     if (printRoot) {
       printRoot.style.position = prevPosition || 'fixed';

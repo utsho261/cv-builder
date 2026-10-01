@@ -216,7 +216,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
   const combinedStyle = { ...baseStyle, ...style };
 
   const innerContent = (
-    <span style={{ display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle', lineHeight: 1 }}>
+    <>
       <span
         className="cv-icon-wrapper"
         style={{
@@ -237,7 +237,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
         style={{
           display: 'inline-block',
           verticalAlign: 'middle',
-          lineHeight: '13px',
+          lineHeight: '12px',
           fontSize: 8.5,
           fontWeight: 500,
           textDecoration: 'none',
@@ -247,7 +247,7 @@ export function LinkButton({ type, label, href, variant = 'default', style }: Li
       >
         {label}
       </span>
-    </span>
+    </>
   );
 
   if (actualHref) {

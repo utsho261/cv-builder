@@ -17,6 +17,16 @@
 
 @import 'tailwindcss';
 
+/* CRITICAL FIX for html2canvas font metrics baseline calculation:
+   Tailwind CSS sets `img { display: block }`. When html2canvas calculates font metrics,
+   it appends an <img> next to a <span> and measures `img.offsetTop - span.offsetTop`.
+   Because of `display: block`, the <img> is pushed onto a new line, inflating the baseline
+   by 15-20px (a full line-height), which shifts all rendered text down and outside badge boxes.
+   Enforcing `img { display: inline-block !important; }` restores correct baseline measurement. */
+img {
+  display: inline-block !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
