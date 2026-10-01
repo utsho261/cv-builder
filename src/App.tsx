@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useMemo, Component } from 'react';
 import { createPortal } from 'react-dom';
-// @ts-ignore
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+
 import { CVData, TemplateConfig } from './types';
 import { TEMPLATES, TemplateRenderer } from './templates';
 import { sampleData, utshoBackendCV, utshoAndroidCV, emptyData } from './sampleData';
@@ -27,9 +25,7 @@ import {
   ShieldCheck,
   AlertCircle,
   FileText,
-  FileDown,
   Printer,
-  Loader2,
   X,
   Layers,
   ArrowLeft,
@@ -1436,7 +1432,7 @@ function BuilderPage({
     const handleBefore = () => {
       const p = document.getElementById('print-root');
       if (p) {
-        p.style.position = 'relative';
+        p.style.position = 'static';
         p.style.left = '0px';
         p.style.top = '0px';
         p.style.zIndex = '9999';
@@ -1455,9 +1451,19 @@ function BuilderPage({
 
     window.addEventListener('beforeprint', handleBefore);
     window.addEventListener('afterprint', handleAfter);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        handlePrint();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       window.removeEventListener('beforeprint', handleBefore);
       window.removeEventListener('afterprint', handleAfter);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
@@ -1465,111 +1471,15 @@ function BuilderPage({
   const handlePrint = useCallback(() => {
     const printRoot = document.getElementById('print-root');
     if (printRoot) {
-      printRoot.style.position = 'relative';
+      printRoot.style.position = 'static';
       printRoot.style.left = '0px';
       printRoot.style.top = '0px';
       printRoot.style.zIndex = '9999';
       printRoot.style.pointerEvents = 'auto';
     }
-    showToast('In the print dialog, select Destination: "Save as PDF" for crystal-clear vector quality & 100% clickable links!');
+    showToast('In the print dialog, select Destination: "Save as PDF" for vector quality & 100% clickable links!');
     window.print();
-    setTimeout(() => {
-      if (printRoot) {
-        printRoot.style.position = 'fixed';
-        printRoot.style.left = '-9999px';
-        printRoot.style.zIndex = '-9999';
-        printRoot.style.pointerEvents = 'none';
-      }
-    }, 2000);
   }, []);
-
-  // Direct High-Resolution 1-Page PDF Download with REAL Clickable Link Buttons
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-
-  const handleDownloadPDF = async () => {
-    setIsGeneratingPdf(true);
-    showToast('Generating 1-Page PDF with clickable links, please wait...');
-
-    try {
-      // Prioritize unzoomed clean print target container to prevent double-text / transform ghosting
-      const printTarget = document.getElementById('print-target-container');
-      const activePreview = document.getElementById('cv-active-preview');
-      const target = (printTarget || activePreview) as HTMLElement;
-
-      if (!target) {
-        handlePrint();
-        return;
-      }
-
-      // Ensure all web fonts are fully loaded
-      if (document.fonts) {
-        await document.fonts.ready;
-      }
-
-      // Render high-DPI canvas directly from unzoomed container
-      const canvas = await html2canvas(target, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#FFFFFF',
-        logging: false,
-        width: 794,
-        height: 1123,
-        onclone: (clonedDoc: Document) => {
-          const clonedPrintRoot = clonedDoc.getElementById('print-root');
-          if (clonedPrintRoot) {
-            clonedPrintRoot.style.position = 'absolute';
-            clonedPrintRoot.style.left = '0px';
-            clonedPrintRoot.style.top = '0px';
-          }
-        },
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
-
-      // Create exact A4 single-page PDF
-      const doc = new jsPDF('p', 'mm', 'a4');
-      const pdfW = 210;
-      const pdfH = 297;
-
-      doc.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH, undefined, 'FAST');
-
-      // Add clickable PDF link annotations for all interactive links in the CV
-      const containerRect = target.getBoundingClientRect();
-      const linkNodes = target.querySelectorAll('a[href], [data-link-url]');
-
-      linkNodes.forEach(node => {
-        const el = node as HTMLElement;
-        let url = el.getAttribute('data-link-url') || el.getAttribute('href');
-        if (!url || url === '#' || url.startsWith('javascript:')) return;
-
-        if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:') && !url.startsWith('tel:')) {
-          url = `https://${url}`;
-        }
-
-        const rect = el.getBoundingClientRect();
-        if (rect.width <= 0 || rect.height <= 0) return;
-
-        // Proportional millimeter coordinates mapped to A4
-        const x = ((rect.left - containerRect.left) / containerRect.width) * pdfW;
-        const y = ((rect.top - containerRect.top) / containerRect.height) * pdfH;
-        const w = (rect.width / containerRect.width) * pdfW;
-        const h = (rect.height / containerRect.height) * pdfH;
-
-        doc.link(x, y, w, h, { url });
-      });
-
-      const cleanName = (cvData.personal.name || 'CV').replace(/\s+/g, '_');
-      doc.save(`${cleanName}_Resume.pdf`);
-      showToast('✓ 1-Page PDF downloaded! You can also use "Print" (Save as PDF) for 100% vector text.');
-    } catch (err) {
-      console.error('PDF export error:', err);
-      showToast('Opening print dialog to Save as PDF...');
-      handlePrint();
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
 
   // Zoom helpers
   const handleZoomIn = () => setZoom(z => Math.min(1.4, parseFloat((z + 0.08).toFixed(2))));
@@ -2020,75 +1930,37 @@ function BuilderPage({
             )}
           </div>
 
-          {/* Secondary Print / Save as PDF Button (Always Visible) */}
+          {/* Primary Print / Save as PDF Button */}
           <button
             onClick={handlePrint}
-            title="Print or Save as PDF (Ctrl + P)"
+            title="Print or Save as PDF (Ctrl + P) — 100% Vector Quality & Clickable Links"
             style={{
-              fontSize: 11.5,
-              fontWeight: 600,
-              color: '#0F172A',
-              background: '#F1F5F9',
-              border: '1px solid #CBD5E1',
-              borderRadius: 8,
-              cursor: 'pointer',
-              padding: '7px 13px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              transition: 'all 0.15s ease',
-              flexShrink: 0,
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = '#E2E8F0';
-              e.currentTarget.style.borderColor = '#94A3B8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = '#F1F5F9';
-              e.currentTarget.style.borderColor = '#CBD5E1';
-            }}
-          >
-            <Printer size={13} />
-            <span className="hidden sm:inline">Print</span>
-          </button>
-
-          {/* Primary Download 1-Page PDF Button (Pinned, Always Visible!) */}
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGeneratingPdf}
-            title="Download guaranteed 1-Page PDF with interactive clickable link buttons"
-            style={{
-              fontSize: 11.5,
+              fontSize: 12,
               fontWeight: 700,
               color: '#FFFFFF',
               background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
               border: 'none',
               borderRadius: 8,
-              cursor: isGeneratingPdf ? 'wait' : 'pointer',
+              cursor: 'pointer',
               padding: '7px 16px',
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 7,
               transition: 'all 0.15s ease',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)',
-              opacity: isGeneratingPdf ? 0.8 : 1,
               flexShrink: 0,
             }}
             onMouseEnter={e => {
-              if (!isGeneratingPdf) {
-                e.currentTarget.style.boxShadow = '0 6px 18px rgba(37, 99, 235, 0.45)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(37, 99, 235, 0.45)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={e => {
-              if (!isGeneratingPdf) {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.35)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.35)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            {isGeneratingPdf ? <Loader2 size={13} className="animate-spin" /> : <FileDown size={13} />}
-            <span>{isGeneratingPdf ? 'Generating...' : 'Download PDF'}</span>
+            <Printer size={14} />
+            <span>Print</span>
           </button>
         </div>
       </header>
@@ -2605,46 +2477,23 @@ function BuilderPage({
             <button
               onClick={handlePrint}
               style={{
-                background: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: '#FFFFFF',
-                borderRadius: 9999,
-                padding: '4px 9px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-                fontSize: 10.5,
-                fontWeight: 600,
-              }}
-              title="Print or Save as PDF"
-            >
-              <Printer size={12} />
-              <span>Print</span>
-            </button>
-
-            {/* Quick Download PDF in Dock */}
-            <button
-              onClick={handleDownloadPDF}
-              disabled={isGeneratingPdf}
-              style={{
                 background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
                 border: 'none',
                 color: '#FFFFFF',
                 borderRadius: 9999,
-                padding: '4px 12px',
-                cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                padding: '5px 14px',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 5,
-                fontSize: 10.5,
+                gap: 6,
+                fontSize: 11,
                 fontWeight: 700,
                 boxShadow: '0 2px 8px rgba(37, 99, 235, 0.4)',
               }}
-              title="Download 1-Page PDF with clickable links"
+              title="Print or Save as PDF (Ctrl + P) with clickable links"
             >
-              {isGeneratingPdf ? <Loader2 size={12} className="animate-spin" /> : <FileDown size={12} />}
-              <span>{isGeneratingPdf ? 'Exporting...' : 'PDF'}</span>
+              <Printer size={13} />
+              <span>Print</span>
             </button>
 
             <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.2)' }} />
@@ -2885,43 +2734,23 @@ function BuilderPage({
             </span>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <button
-                onClick={handleDownloadPDF}
-                disabled={isGeneratingPdf}
+                onClick={handlePrint}
                 style={{
                   background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: 7,
                   padding: '7px 16px',
-                  fontSize: 11,
+                  fontSize: 11.5,
                   fontWeight: 700,
-                  cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
                   transition: 'all 0.15s ease',
                   boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
                 }}
-              >
-                {isGeneratingPdf ? <Loader2 size={13} className="animate-spin" /> : <FileDown size={13} />}
-                <span>{isGeneratingPdf ? 'Generating...' : 'Download 1-Page PDF'}</span>
-              </button>
-
-              <button
-                onClick={handlePrint}
-                style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  color: '#FFFFFF',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: 7,
-                  padding: '7px 14px',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                }}
+                title="Print or Save as PDF (Ctrl + P) with clickable links"
               >
                 <Printer size={13} />
                 <span>Print</span>

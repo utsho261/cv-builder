@@ -663,7 +663,20 @@ function SidebarCV({ data, theme }: { data: CVData; theme: SidebarTheme }) {
             {projects.map((p, i) => (
               <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? 12 : 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                  <div style={theme.jobTitle}>{p.name}</div>
+                  {p.url ? (
+                    <a
+                      href={formatHref('url', p.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                      className="cv-link-button"
+                      title={`Open ${p.name}`}
+                    >
+                      {p.name}
+                    </a>
+                  ) : (
+                    <div style={theme.jobTitle}>{p.name}</div>
+                  )}
                   {p.url && <ProjectLinkButton url={p.url} />}
                 </div>
                 {p.technologies.length > 0 && <div style={theme.meta}>{p.technologies.join(', ')}</div>}
@@ -742,7 +755,20 @@ function TwoColCV({ data, theme }: { data: CVData; theme: any }) {
               {projects.map((p, i) => (
                 <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? 10 : 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                    <div style={theme.jobTitle}>{p.name}</div>
+                    {p.url ? (
+                      <a
+                        href={formatHref('url', p.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                        className="cv-link-button"
+                        title={`Open ${p.name}`}
+                      >
+                        {p.name}
+                      </a>
+                    ) : (
+                      <div style={theme.jobTitle}>{p.name}</div>
+                    )}
                     {p.url && <ProjectLinkButton url={p.url} />}
                   </div>
                   {p.technologies.length > 0 && <div style={theme.meta}>{p.technologies.join(', ')}</div>}
@@ -884,7 +910,20 @@ function TimelineCV({ data, theme }: { data: CVData; theme: any }) {
               {projects.map((p, i) => (
                 <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? 10 : 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                    <span style={theme.jobTitle}>{p.name}</span>
+                    {p.url ? (
+                      <a
+                        href={formatHref('url', p.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                        className="cv-link-button"
+                        title={`Open ${p.name}`}
+                      >
+                        {p.name}
+                      </a>
+                    ) : (
+                      <span style={theme.jobTitle}>{p.name}</span>
+                    )}
                     {p.url && <ProjectLinkButton url={p.url} />}
                   </div>
                   {p.technologies && p.technologies.length > 0 && <div style={theme.meta}>{p.technologies.join(', ')}</div>}
@@ -977,7 +1016,20 @@ function EditorialCV({ data, theme }: { data: CVData; theme: any }) {
               {projects.map(p => (
                 <div key={p.id} style={{ marginBottom: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                    <div style={theme.jobTitle}>{p.name}</div>
+                    {p.url ? (
+                      <a
+                        href={formatHref('url', p.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                        className="cv-link-button"
+                        title={`Open ${p.name}`}
+                      >
+                        {p.name}
+                      </a>
+                    ) : (
+                      <div style={theme.jobTitle}>{p.name}</div>
+                    )}
                     {p.url && <ProjectLinkButton url={p.url} />}
                   </div>
                   {p.technologies.length > 0 && <div style={theme.meta}>{p.technologies.join(', ')}</div>}
@@ -1096,7 +1148,20 @@ function BoldHeaderCV({ data, theme }: { data: CVData; theme: any }) {
             {projects.map((p, i) => (
               <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? 10 : 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                  <div style={theme.jobTitle}>{p.name}</div>
+                  {p.url ? (
+                    <a
+                      href={formatHref('url', p.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ ...theme.jobTitle, textDecoration: 'none', cursor: 'pointer' }}
+                      className="cv-link-button"
+                      title={`Open ${p.name}`}
+                    >
+                      {p.name}
+                    </a>
+                  ) : (
+                    <div style={theme.jobTitle}>{p.name}</div>
+                  )}
                   {p.url && <ProjectLinkButton url={p.url} variant="dark" />}
                 </div>
                 {p.technologies.length > 0 && <div style={theme.meta}>{p.technologies.join(', ')}</div>}
@@ -2211,7 +2276,20 @@ function MicrosoftCV({ data }: { data: CVData }) {
               {projects.map((p, i) => (
                 <div key={p.id} style={{ marginBottom: i < projects.length - 1 ? 12 : 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
-                    <span style={{ fontSize: 10.5, fontWeight: 700, color: '#242424' }}>{p.name}</span>
+                    {p.url ? (
+                      <a
+                        href={formatHref('url', p.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 10.5, fontWeight: 700, color: '#242424', textDecoration: 'none', cursor: 'pointer' }}
+                        className="cv-link-button"
+                        title={`Open ${p.name}`}
+                      >
+                        {p.name}
+                      </a>
+                    ) : (
+                      <span style={{ fontSize: 10.5, fontWeight: 700, color: '#242424' }}>{p.name}</span>
+                    )}
                     {p.url && <ProjectLinkButton url={p.url} variant="microsoft" />}
                   </div>
                   {p.technologies.length > 0 && (
