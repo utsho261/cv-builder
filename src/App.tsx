@@ -153,17 +153,16 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed?.personal?.name && parsed.personal.name !== 'Alexandra Chen') {
-          // If Utsho Roy draft, ensure 2 new GitHub web projects & rich experience bullets are synced
+          // If Utsho Roy draft, ensure pure Python/Django projects & backend bullets are synced
           if (typeof parsed.personal.name === 'string' && parsed.personal.name.toLowerCase().includes('utsho')) {
-            // Replace react-shopping-cart or student-dashboard with bloghub if it exists in parsed.projects
             if (Array.isArray(parsed.projects)) {
-              parsed.projects = parsed.projects.map((p: any) => {
-                if ((p.url || '').includes('react-shopping-cart') || (p.url || '').includes('student-dashboard') || (p.name || '').toLowerCase().includes('shopping cart') || (p.name || '').toLowerCase().includes('student dashboard')) {
-                  const blogProj = utshoBackendCV.projects.find(proj => proj.id === 'be-proj-5');
-                  return blogProj || p;
-                }
-                return p;
-              });
+              // Remove cv-builder and old non-python projects
+              parsed.projects = parsed.projects.filter((p: any) =>
+                !(p.url || '').includes('cv-builder') &&
+                !(p.name || '').toLowerCase().includes('cv builder') &&
+                !(p.url || '').includes('react-shopping-cart') &&
+                !(p.url || '').includes('student-dashboard')
+              );
             }
             const existingProjectIds = new Set((parsed.projects || []).map((p: any) => p.id || p.name));
             const missingProjects = utshoBackendCV.projects.filter(p => !existingProjectIds.has(p.id) && !existingProjectIds.has(p.name));
@@ -173,17 +172,9 @@ export default function App() {
             if (Array.isArray(parsed.experience)) {
               const indepExp = parsed.experience.find((e: any) => (e.company || '').toLowerCase().includes('independent software'));
               if (indepExp) {
-                if (!indepExp.bullets || indepExp.bullets.length < 5) {
-                  const sampleIndep = utshoBackendCV.experience.find(e => e.id === 'be-exp-2');
-                  if (sampleIndep) {
-                    indepExp.bullets = sampleIndep.bullets;
-                  }
-                } else if (Array.isArray(indepExp.bullets)) {
-                  indepExp.bullets = indepExp.bullets.map((b: string) =>
-                    b.includes('Shopping Cart') || b.includes('Student Dashboard')
-                      ? 'Developed BlogHub publishing platform in Django featuring user authentication, post CRUD, comments, and like counter'
-                      : b
-                  );
+                const sampleIndep = utshoBackendCV.experience.find(e => e.id === 'be-exp-2');
+                if (sampleIndep) {
+                  indepExp.bullets = sampleIndep.bullets;
                 }
               }
             }
