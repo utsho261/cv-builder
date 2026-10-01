@@ -146,6 +146,10 @@ a.cv-link-button:focus,
   outline: none !important;
 }
 
+.cv-link-button span {
+  vertical-align: middle;
+}
+
 .cv-link-button {
   display: inline-flex;
   align-items: center;

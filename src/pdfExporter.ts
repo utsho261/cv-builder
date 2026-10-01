@@ -30,15 +30,15 @@ export async function exportCVToPDF(
   const prevOpacity = printRoot?.style.opacity || '';
 
   try {
-    // Bring print container into coordinate space temporarily
+    // Bring print container into coordinate space safely behind UI
     if (printRoot) {
       printRoot.style.position = 'fixed';
       printRoot.style.left = '0px';
       printRoot.style.top = '0px';
-      printRoot.style.zIndex = '99998';
+      printRoot.style.zIndex = '-99999';
       printRoot.style.opacity = '1';
-      printRoot.style.pointerEvents = 'auto';
-      printRoot.style.overflow = 'visible';
+      printRoot.style.pointerEvents = 'none';
+      printRoot.style.overflow = 'hidden';
     }
 
     // Wait a frame for layout to settle
@@ -60,6 +60,10 @@ export async function exportCVToPDF(
         backgroundColor: '#FFFFFF',
         width: 794,
         windowWidth: 794,
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
       },
       jsPDF: {
         unit: 'mm',
