@@ -39,7 +39,7 @@ export const utshoBackendCV: CVData = {
       bullets: [
         'Engineered ATS CV Builder web platform using React 19, TypeScript, and Tailwind CSS with client-side PDF generation',
         'Built Hospital Management System backend REST API using Django 5 and DRF with 4-tier role-based access control',
-        'Developed React Shopping Cart web application featuring real-time cart state management and responsive UI',
+        'Built Student Dashboard web application in React and Vite featuring dynamic record filtering and modular UI architecture',
         'Developed a personal finance tracker using Flask and MongoDB with JWT token verification and interactive spending charts',
         'Implemented API security best practices including CORS controls, input sanitization, and parameter validation',
       ],
@@ -125,10 +125,10 @@ export const utshoBackendCV: CVData = {
     },
     {
       id: 'be-proj-5',
-      name: 'React Shopping Cart — E-Commerce Web App',
-      description: 'A responsive e-commerce web application featuring dynamic cart state management, catalog search and category filtering, instant checkout calculation, and mock payment flow.',
-      technologies: ['React', 'JavaScript', 'Context API', 'Tailwind CSS', 'REST API'],
-      url: 'github.com/utsho261/react-shopping-cart',
+      name: 'Student Dashboard — Academic Record & Management App',
+      description: 'An interactive student management dashboard web application built with React and Vite featuring dynamic record filtering, controlled forms, state lifting, and Error Boundary.',
+      technologies: ['React', 'Vite', 'JavaScript', 'CSS3', 'Component Composition'],
+      url: 'github.com/utsho261/student-dashboard',
     },
   ],
   certifications: [
