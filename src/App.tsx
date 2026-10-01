@@ -155,12 +155,12 @@ export default function App() {
         if (parsed?.personal?.name && parsed.personal.name !== 'Alexandra Chen') {
           // If Utsho Roy draft, ensure 2 new GitHub web projects & rich experience bullets are synced
           if (typeof parsed.personal.name === 'string' && parsed.personal.name.toLowerCase().includes('utsho')) {
-            // Replace react-shopping-cart if it exists in parsed.projects
+            // Replace react-shopping-cart or student-dashboard with bloghub if it exists in parsed.projects
             if (Array.isArray(parsed.projects)) {
               parsed.projects = parsed.projects.map((p: any) => {
-                if ((p.url || '').includes('react-shopping-cart') || (p.name || '').toLowerCase().includes('shopping cart')) {
-                  const studentProj = utshoBackendCV.projects.find(proj => proj.id === 'be-proj-5');
-                  return studentProj || p;
+                if ((p.url || '').includes('react-shopping-cart') || (p.url || '').includes('student-dashboard') || (p.name || '').toLowerCase().includes('shopping cart') || (p.name || '').toLowerCase().includes('student dashboard')) {
+                  const blogProj = utshoBackendCV.projects.find(proj => proj.id === 'be-proj-5');
+                  return blogProj || p;
                 }
                 return p;
               });
@@ -180,8 +180,8 @@ export default function App() {
                   }
                 } else if (Array.isArray(indepExp.bullets)) {
                   indepExp.bullets = indepExp.bullets.map((b: string) =>
-                    b.includes('Shopping Cart')
-                      ? 'Built Student Dashboard web application in React and Vite featuring dynamic record filtering and modular UI architecture'
+                    b.includes('Shopping Cart') || b.includes('Student Dashboard')
+                      ? 'Developed BlogHub publishing platform in Django featuring user authentication, post CRUD, comments, and like counter'
                       : b
                   );
                 }

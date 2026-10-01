@@ -39,7 +39,7 @@ export const utshoBackendCV: CVData = {
       bullets: [
         'Engineered ATS CV Builder web platform using React 19, TypeScript, and Tailwind CSS with client-side PDF generation',
         'Built Hospital Management System backend REST API using Django 5 and DRF with 4-tier role-based access control',
-        'Built Student Dashboard web application in React and Vite featuring dynamic record filtering and modular UI architecture',
+        'Developed BlogHub publishing platform in Django featuring user authentication, post CRUD, comments, and like counter',
         'Developed a personal finance tracker using Flask and MongoDB with JWT token verification and interactive spending charts',
         'Implemented API security best practices including CORS controls, input sanitization, and parameter validation',
       ],
@@ -125,10 +125,10 @@ export const utshoBackendCV: CVData = {
     },
     {
       id: 'be-proj-5',
-      name: 'Student Dashboard — Academic Record & Management App',
-      description: 'An interactive student management dashboard web application built with React and Vite featuring dynamic record filtering, controlled forms, state lifting, and Error Boundary.',
-      technologies: ['React', 'Vite', 'JavaScript', 'CSS3', 'Component Composition'],
-      url: 'github.com/utsho261/student-dashboard',
+      name: 'BlogHub — Django Web Application & Content Platform',
+      description: 'A full-featured blog web application built using Django featuring email-based user authentication, CRUD post management with image uploads, interactive comments, and a like/unlike engagement system.',
+      technologies: ['Python', 'Django', 'SQLite', 'User Auth', 'Bootstrap 5', 'CRUD'],
+      url: 'github.com/utsho261/bloghub',
     },
   ],
   certifications: [
