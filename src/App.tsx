@@ -6,6 +6,7 @@ import { TEMPLATES, TemplateRenderer } from './templates';
 import { sampleData, utshoBackendCV, utshoAndroidCV, emptyData } from './sampleData';
 import { PRESET_PROFILES, PresetProfile, formatCVAsPlainText } from './presets';
 import { analyzeCV, ATSAnalysis } from './atsAnalyzer';
+import { exportCVToPDF } from './pdfExporter';
 import {
   ChevronUp,
   ChevronDown,
@@ -1382,6 +1383,15 @@ function BuilderPage({
   const [templateFilter, setTemplateFilter] = useState<string>('all');
   const [mobileTab, setMobileTab] = useState<MobileTab>('edit');
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
+  const [showPrintGuideModal, setShowPrintGuideModal] = useState<boolean>(false);
+  const [isExportingPDF, setIsExportingPDF] = useState<boolean>(false);
+  const [hidePrintGuideForever, setHidePrintGuideForever] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('cv_hide_print_guide') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // Close tools menu on click outside
   useEffect(() => {
@@ -1467,8 +1477,8 @@ function BuilderPage({
     };
   }, []);
 
-  // Handle PDF Print / Save as PDF (Native Browser Vector Print with 100% Clickable Links)
-  const handlePrint = useCallback(() => {
+  // Trigger native browser print
+  const triggerBrowserPrint = useCallback(() => {
     const printRoot = document.getElementById('print-root');
     if (printRoot) {
       printRoot.style.position = 'static';
@@ -1477,9 +1487,43 @@ function BuilderPage({
       printRoot.style.zIndex = '9999';
       printRoot.style.pointerEvents = 'auto';
     }
-    showToast('In the print dialog, select Destination: "Save as PDF" for vector quality & 100% clickable links!');
+    showToast('Print window opened! Remember: Destination "Save as PDF" & check "Background graphics"');
     window.print();
-  }, []);
+  }, [showToast]);
+
+  // Handle PDF Print / Save as PDF with guide modal
+  const handlePrint = useCallback(() => {
+    if (hidePrintGuideForever) {
+      triggerBrowserPrint();
+    } else {
+      setShowPrintGuideModal(true);
+    }
+  }, [hidePrintGuideForever, triggerBrowserPrint]);
+
+  // Handle 1-Click Direct PDF Download with active links & vibrant colors
+  const handleDirectDownloadPDF = useCallback(async () => {
+    setIsExportingPDF(true);
+    showToast('Generating high-resolution PDF with clickable links & full colors...');
+    try {
+      const success = await exportCVToPDF('print-target-container', cvData);
+      if (success) {
+        showToast('Downloaded PDF with 100% active links and vibrant colors!');
+      }
+    } catch (err) {
+      console.error('Direct PDF export error:', err);
+      showToast('Direct download error, opening print window instead...');
+      triggerBrowserPrint();
+    } finally {
+      setIsExportingPDF(false);
+    }
+  }, [cvData, showToast, triggerBrowserPrint]);
+
+  const handleToggleHidePrintGuideForever = (checked: boolean) => {
+    setHidePrintGuideForever(checked);
+    try {
+      localStorage.setItem('cv_hide_print_guide', checked ? 'true' : 'false');
+    } catch {}
+  };
 
   // Zoom helpers
   const handleZoomIn = () => setZoom(z => Math.min(1.4, parseFloat((z + 0.08).toFixed(2))));
@@ -1883,6 +1927,24 @@ function BuilderPage({
                   <span>Copy ATS Plain Text</span>
                 </button>
                 <button
+                  onClick={() => { handleDirectDownloadPDF(); setShowToolsMenu(false); }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', border: 'none', background: 'transparent', borderRadius: 6, cursor: 'pointer', fontSize: 11.5, color: '#059669', fontWeight: 600, textAlign: 'left' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#ECFDF5')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <Download size={13} color="#059669" />
+                  <span>Download PDF (Direct - 1 Click)</span>
+                </button>
+                <button
+                  onClick={() => { handlePrint(); setShowToolsMenu(false); }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', border: 'none', background: 'transparent', borderRadius: 6, cursor: 'pointer', fontSize: 11.5, color: '#2563EB', fontWeight: 600, textAlign: 'left' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#EFF6FF')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <Printer size={13} color="#2563EB" />
+                  <span>Save as PDF (Vector ATS)</span>
+                </button>
+                <button
                   onClick={() => { handleDownloadTxt(); setShowToolsMenu(false); }}
                   style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', border: 'none', background: 'transparent', borderRadius: 6, cursor: 'pointer', fontSize: 11.5, color: '#334155', fontWeight: 500, textAlign: 'left' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#F8FAFC')}
@@ -1930,10 +1992,47 @@ function BuilderPage({
             )}
           </div>
 
+          {/* 1-Click Direct Download PDF Button */}
+          <button
+            onClick={handleDirectDownloadPDF}
+            disabled={isExportingPDF}
+            title="1-Click Direct Download PDF with 100% Clickable Links & Vibrant Colors"
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: '#FFFFFF',
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              border: 'none',
+              borderRadius: 8,
+              cursor: isExportingPDF ? 'not-allowed' : 'pointer',
+              padding: '7px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.15s ease',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)',
+              flexShrink: 0,
+              opacity: isExportingPDF ? 0.7 : 1,
+            }}
+            onMouseEnter={e => {
+              if (!isExportingPDF) {
+                e.currentTarget.style.boxShadow = '0 6px 18px rgba(16, 185, 129, 0.45)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.35)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            <Download size={14} />
+            <span>{isExportingPDF ? 'Generating...' : 'Download PDF'}</span>
+          </button>
+
           {/* Primary Print / Save as PDF Button */}
           <button
             onClick={handlePrint}
-            title="Print or Save as PDF (Ctrl + P) — 100% Vector Quality & Clickable Links"
+            title="Print or Save as PDF (Ctrl + P) — Vector Quality & Clickable Links"
             style={{
               fontSize: 12,
               fontWeight: 700,
@@ -1942,10 +2041,10 @@ function BuilderPage({
               border: 'none',
               borderRadius: 8,
               cursor: 'pointer',
-              padding: '7px 16px',
+              padding: '7px 14px',
               display: 'flex',
               alignItems: 'center',
-              gap: 7,
+              gap: 6,
               transition: 'all 0.15s ease',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)',
               flexShrink: 0,
@@ -1960,7 +2059,7 @@ function BuilderPage({
             }}
           >
             <Printer size={14} />
-            <span>Print</span>
+            <span>Save as PDF</span>
           </button>
         </div>
       </header>
@@ -2473,6 +2572,31 @@ function BuilderPage({
 
             <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.2)' }} />
 
+            {/* 1-Click Direct Download Button in Dock */}
+            <button
+              onClick={handleDirectDownloadPDF}
+              disabled={isExportingPDF}
+              style={{
+                background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                border: 'none',
+                color: '#FFFFFF',
+                borderRadius: 9999,
+                padding: '5px 12px',
+                cursor: isExportingPDF ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 11,
+                fontWeight: 700,
+                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
+                opacity: isExportingPDF ? 0.7 : 1,
+              }}
+              title="1-Click Direct PDF Download with active links & colors"
+            >
+              <Download size={13} />
+              <span>{isExportingPDF ? 'Saving...' : 'Download PDF'}</span>
+            </button>
+
             {/* Quick Print Button in Dock */}
             <button
               onClick={handlePrint}
@@ -2481,11 +2605,11 @@ function BuilderPage({
                 border: 'none',
                 color: '#FFFFFF',
                 borderRadius: 9999,
-                padding: '5px 14px',
+                padding: '5px 12px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6,
+                gap: 5,
                 fontSize: 11,
                 fontWeight: 700,
                 boxShadow: '0 2px 8px rgba(37, 99, 235, 0.4)',
@@ -2734,13 +2858,38 @@ function BuilderPage({
             </span>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <button
+                onClick={handleDirectDownloadPDF}
+                disabled={isExportingPDF}
+                style={{
+                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 7,
+                  padding: '7px 14px',
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  cursor: isExportingPDF ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  transition: 'all 0.15s ease',
+                  boxShadow: '0 2px 8px rgba(16,185,129,0.3)',
+                  opacity: isExportingPDF ? 0.7 : 1,
+                }}
+                title="1-Click Direct Download PDF with active links & colors"
+              >
+                <Download size={13} />
+                <span>{isExportingPDF ? 'Generating...' : 'Download PDF'}</span>
+              </button>
+
+              <button
                 onClick={handlePrint}
                 style={{
                   background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: 7,
-                  padding: '7px 16px',
+                  padding: '7px 14px',
                   fontSize: 11.5,
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -2753,7 +2902,7 @@ function BuilderPage({
                 title="Print or Save as PDF (Ctrl + P) with clickable links"
               >
                 <Printer size={13} />
-                <span>Print</span>
+                <span>Save as PDF</span>
               </button>
               <button
                 onClick={() => setIsFullscreen(false)}
@@ -3123,6 +3272,350 @@ function BuilderPage({
               >
                 Clear All
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Print / Save as PDF Guide (Vibrant Colors & Clickable Links) */}
+      {showPrintGuideModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            zIndex: 99998,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+          }}
+          onClick={() => setShowPrintGuideModal(false)}
+        >
+          <div
+            style={{
+              width: 580,
+              maxWidth: '100%',
+              background: '#FFFFFF',
+              borderRadius: 16,
+              boxShadow: '0 25px 60px -15px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(15, 23, 42, 0.08)',
+              overflow: 'hidden',
+            }}
+            className="animate-fade-in"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                padding: '18px 24px',
+                borderBottom: '1px solid #E2E8F0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: 'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 10,
+                    background: '#DBEAFE',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Printer size={20} color="#2563EB" />
+                </div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    Save as PDF Settings Guide
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#2563EB', background: '#DBEAFE', padding: '1px 6px', borderRadius: 4 }}>
+                      Important
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 11.5, color: '#64748B' }}>
+                    কালার ঠিক রাখা এবং লিংক ক্লিকেবল রাখার জন্য নিচের ২টি সেটিংস নিশ্চিত করুন
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPrintGuideModal(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B', padding: 4 }}
+                title="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Checklist Guide Content */}
+            <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {/* Step 1: Destination */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 14,
+                  padding: '12px 14px',
+                  borderRadius: 10,
+                  background: '#F8FAFC',
+                  border: '1px solid #E2E8F0',
+                }}
+              >
+                <div
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: '50%',
+                    background: '#2563EB',
+                    color: '#FFFFFF',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  1
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#0F172A' }}>
+                      Destination (গন্তব্য)
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#166534', background: '#DCFCE7', border: '1px solid #BBF7D0', padding: '1px 7px', borderRadius: 4 }}>
+                      Select "Save as PDF"
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.5, color: '#334155' }}>
+                    প্রিন্ট উইন্ডোর Destination ড্রপডাউন থেকে <strong>"Save as PDF"</strong> সিলেক্ট করুন।
+                  </p>
+                  <p style={{ margin: '4px 0 0', fontSize: 11, color: '#DC2626', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <AlertCircle size={12} /> কখনই "Microsoft Print to PDF" দিবেন না — এটি সব লিংকের ক্লিক নষ্ট করে দেয়!
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2: Background Graphics */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 14,
+                  padding: '12px 14px',
+                  borderRadius: 10,
+                  background: '#F8FAFC',
+                  border: '1px solid #E2E8F0',
+                }}
+              >
+                <div
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: '50%',
+                    background: '#2563EB',
+                    color: '#FFFFFF',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  2
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#0F172A' }}>
+                      More settings ▾ → Background graphics
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#1E40AF', background: '#DBEAFE', border: '1px solid #BFDBFE', padding: '1px 7px', borderRadius: 4 }}>
+                      [✓] Checkmark (টিক দিন)
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.5, color: '#334155' }}>
+                    <strong>"More settings"</strong> এ ক্লিক করে <strong>"Background graphics"</strong> বক্সে টিকচিহ্ন দিন।
+                  </p>
+                  <p style={{ margin: '4px 0 0', fontSize: 11, color: '#D97706', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <AlertCircle size={12} /> টিক না দিলে ব্রাউজার সব ব্যাকগ্রাউন্ড কালার, ব্যাজ ও চিপের রঙ মুছে সাদা করে ফেলে!
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3: Margins */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 14,
+                  padding: '10px 14px',
+                  borderRadius: 10,
+                  background: '#F8FAFC',
+                  border: '1px solid #E2E8F0',
+                }}
+              >
+                <div
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: '50%',
+                    background: '#64748B',
+                    color: '#FFFFFF',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  3
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#0F172A' }}>
+                      Margins (মার্জিন)
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#475569', background: '#F1F5F9', padding: '1px 6px', borderRadius: 4 }}>
+                      Select "None"
+                    </span>
+                  </div>
+                  <p style={{ margin: '2px 0 0', fontSize: 11, color: '#64748B' }}>
+                    মার্জিন "None" রাখলে নিখুঁত ১-পেজ A4 সাইজে সেভ হবে।
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div
+              style={{
+                padding: '16px 24px',
+                borderTop: '1px solid #E2E8F0',
+                background: '#F8FAFC',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+              }}
+            >
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => {
+                    setShowPrintGuideModal(false);
+                    triggerBrowserPrint();
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: 200,
+                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '10px 18px',
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 7,
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <Printer size={15} />
+                  <span>Open Print Dialog (Save as PDF)</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowPrintGuideModal(false);
+                    handleDirectDownloadPDF();
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: 200,
+                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '10px 18px',
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 7,
+                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <Download size={15} />
+                  <span>Or 1-Click Direct Download PDF</span>
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748B', cursor: 'pointer', userSelect: 'none' }}>
+                  <input
+                    type="checkbox"
+                    checked={hidePrintGuideForever}
+                    onChange={e => handleToggleHidePrintGuideForever(e.target.checked)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <span>Don't show this guide dialog again (ভবিষ্যতে আর দেখাবেন না)</span>
+                </label>
+                <button
+                  onClick={() => setShowPrintGuideModal(false)}
+                  style={{ background: 'transparent', border: 'none', fontSize: 11.5, color: '#64748B', cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Overlay: Direct PDF Export */}
+      {isExportingPDF && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.82)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            zIndex: 999999,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 16,
+            color: '#FFFFFF',
+          }}
+          className="animate-fade-in"
+        >
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              border: '4px solid rgba(255, 255, 255, 0.15)',
+              borderTopColor: '#10B981',
+              borderRadius: '50%',
+              animation: 'spin 0.8s linear infinite',
+            }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>
+              Generating Publication-Grade PDF...
+            </div>
+            <div style={{ fontSize: 12.5, color: '#94A3B8', maxWidth: 360 }}>
+              Rendering high-resolution canvas with vibrant background colors and clickable hyperlinks.
             </div>
           </div>
         </div>

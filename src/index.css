@@ -51,7 +51,12 @@
   --ring: #3B82F6;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  color-adjust: exact;
+}
 html, body, #root { height: 100%; }
 
 body {
@@ -89,6 +94,11 @@ button {
 @keyframes pulseGlow {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .animate-fade-in {
@@ -195,6 +205,12 @@ a.cv-link-button:focus,
 }
 
 @media print {
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   html, body {
     background: #FFFFFF !important;
     margin: 0 !important;
@@ -205,10 +221,13 @@ a.cv-link-button:focus,
     overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+
   #root, .no-print {
     display: none !important;
   }
+
   #print-root {
     display: block !important;
     position: static !important;
@@ -226,13 +245,19 @@ a.cv-link-button:focus,
     user-select: text !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+
   #print-root *,
   #print-target-container,
   #print-target-container * {
     pointer-events: auto !important;
     user-select: text !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+
   #print-root > div, #print-target-container, #print-target-container > div {
     width: 210mm !important;
     max-height: 297mm !important;
@@ -241,15 +266,25 @@ a.cv-link-button:focus,
     overflow: visible !important;
     page-break-after: avoid !important;
     break-after: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+
   a, a[href], .cv-link-button {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color: inherit !important;
+    color-adjust: exact !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
     position: relative !important;
     z-index: 10 !important;
+  }
+
+  svg {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 }
