@@ -1920,58 +1920,64 @@ function GoogleCV({ data }: { data: CVData }) {
       {/* 4. Work Experience */}
       {experience.length > 0 && (
         <div style={{ flexShrink: 0 }}>
-          <GoogleSectionHeader label="Work Experience" badge="Google XYZ Formula" icon={<Briefcase size={13} />} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-            {experience.map(exp => (
-              <div key={exp.id}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#202124' }}>{exp.position}</span>
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      fontSize: 8.2,
-                      fontWeight: 500,
-                      color: '#5F6368',
-                      background: '#F1F3F4',
-                      padding: '1.5px 7px',
-                      borderRadius: 3,
-                      lineHeight: '12px',
-                      boxSizing: 'border-box',
-                      verticalAlign: 'middle',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {exp.startDate} – {exp.endDate}
-                  </span>
+          <GoogleSectionHeader label="Work Experience" icon={<Briefcase size={13} />} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+            {experience.map(exp => {
+              const isCampusConnect = (exp.company || '').toLowerCase().includes('campusconnect') || (exp.position || '').toLowerCase().includes('campusconnect');
+              const primaryTitle = exp.company || exp.position;
+              const secondaryTitle = exp.position && exp.company && exp.position !== exp.company ? exp.position : null;
+
+              return (
+                <div key={exp.id}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 2 }}>
+                    <div>
+                      {isCampusConnect ? (
+                        <a
+                          href="https://github.com/utsho261/CampusConnect"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-link-url="https://github.com/utsho261/CampusConnect"
+                          style={{ fontSize: 10.4, fontWeight: 700, color: '#1A73E8', textDecoration: 'none', cursor: 'pointer' }}
+                          title="Open CampusConnect GitHub Repository"
+                          className="cv-link-button"
+                        >
+                          {primaryTitle}
+                        </a>
+                      ) : (
+                        <span style={{ fontSize: 10.4, fontWeight: 700, color: '#1A73E8' }}>
+                          {primaryTitle}
+                        </span>
+                      )}
+                      {secondaryTitle && (
+                        <span style={{ fontSize: 8.8, fontWeight: 500, color: '#5F6368', marginLeft: 6 }}>
+                          · {secondaryTitle}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
+                      {(exp.startDate || exp.endDate) && (
+                        <div style={{ fontSize: 8.2, fontWeight: 500, color: '#5F6368', lineHeight: 1.2 }}>
+                          {exp.startDate}{exp.endDate ? ` – ${exp.endDate}` : ''}
+                        </div>
+                      )}
+                      {exp.location && (
+                        <div style={{ fontSize: 8, color: '#80868B', marginTop: 1, lineHeight: 1.2 }}>
+                          {exp.location}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: 10, listStyle: 'none' }}>
+                    {exp.bullets.map((b, bi) => (
+                      <li key={bi} style={{ display: 'flex', gap: 6, marginBottom: 2, alignItems: 'flex-start' }}>
+                        <span style={{ color: '#1A73E8', fontSize: 11, lineHeight: '13px', flexShrink: 0 }}>•</span>
+                        <span style={{ fontSize: 9, lineHeight: 1.45, color: '#3C4043' }}>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                  {exp.company.toLowerCase().includes('campusconnect') ? (
-                    <a
-                      href="https://github.com/utsho261/CampusConnect"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-link-url="https://github.com/utsho261/CampusConnect"
-                      style={{ fontSize: 9.8, fontWeight: 600, color: '#1A73E8', textDecoration: 'none', cursor: 'pointer' }}
-                      title="Open CampusConnect GitHub Repository"
-                      className="cv-link-button"
-                    >
-                      {exp.company}
-                    </a>
-                  ) : (
-                    <span style={{ fontSize: 9.8, fontWeight: 600, color: '#1A73E8' }}>{exp.company}</span>
-                  )}
-                  {exp.location && <span style={{ fontSize: 8.2, color: '#5F6368' }}>{exp.location}</span>}
-                </div>
-                <ul style={{ margin: 0, paddingLeft: 10, listStyle: 'none' }}>
-                  {exp.bullets.map((b, bi) => (
-                    <li key={bi} style={{ display: 'flex', gap: 6, marginBottom: 3, alignItems: 'flex-start' }}>
-                      <span style={{ color: '#1A73E8', fontSize: 11, lineHeight: '13px', flexShrink: 0 }}>•</span>
-                      <span style={{ fontSize: 9, lineHeight: 1.46, color: '#3C4043' }}>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -1980,7 +1986,7 @@ function GoogleCV({ data }: { data: CVData }) {
       {projects.length > 0 && (
         <div style={{ flexShrink: 0 }}>
           <GoogleSectionHeader label="Featured Projects & Production Systems" badge="Live Repos" icon={<Code size={13} />} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {projects.map(p => (
               <div key={p.id}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 4 }}>
@@ -1990,30 +1996,30 @@ function GoogleCV({ data }: { data: CVData }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-link-url={formatHref('url', p.url)}
-                      style={{ fontSize: 10.4, fontWeight: 700, color: '#202124', textDecoration: 'none', cursor: 'pointer' }}
+                      style={{ fontSize: 10, fontWeight: 700, color: '#202124', textDecoration: 'none', cursor: 'pointer' }}
                       title={`Open ${p.name}`}
                       className="cv-link-button"
                     >
                       {p.name}
                     </a>
                   ) : (
-                    <span style={{ fontSize: 10.4, fontWeight: 700, color: '#202124' }}>{p.name}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#202124' }}>{p.name}</span>
                   )}
                   {p.url && <ProjectLinkButton url={p.url} variant="google" />}
                 </div>
                 {p.technologies.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', margin: '2px -2px', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', margin: '1px -2px', alignItems: 'center' }}>
                     {p.technologies.map(tech => (
                       <span
                         key={tech}
                         style={{
                           display: 'inline-block',
-                          fontSize: 7.6,
+                          fontSize: 7.4,
                           color: '#5F6368',
                           background: '#F1F3F4',
-                          padding: '1.5px 6px',
+                          padding: '1px 5.5px',
                           borderRadius: 3,
-                          margin: '1.5px 2px',
+                          margin: '1px 2px',
                           lineHeight: '11px',
                           boxSizing: 'border-box',
                           verticalAlign: 'middle',
@@ -2025,7 +2031,7 @@ function GoogleCV({ data }: { data: CVData }) {
                     ))}
                   </div>
                 )}
-                <p style={{ margin: '2px 0 0', fontSize: 8.9, lineHeight: 1.45, color: '#3C4043' }}>
+                <p style={{ margin: '1.5px 0 0', fontSize: 8.8, lineHeight: 1.42, color: '#3C4043' }}>
                   {p.description}
                 </p>
               </div>

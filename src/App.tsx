@@ -153,6 +153,23 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed?.personal?.name && parsed.personal.name !== 'Alexandra Chen') {
+          // If Utsho Roy draft, ensure 2 new GitHub web projects & rich experience bullets are synced
+          if (typeof parsed.personal.name === 'string' && parsed.personal.name.toLowerCase().includes('utsho')) {
+            const existingProjectIds = new Set((parsed.projects || []).map((p: any) => p.id || p.name));
+            const missingProjects = utshoBackendCV.projects.filter(p => !existingProjectIds.has(p.id) && !existingProjectIds.has(p.name));
+            if (missingProjects.length > 0) {
+              parsed.projects = [...(parsed.projects || []), ...missingProjects];
+            }
+            if (Array.isArray(parsed.experience)) {
+              const indepExp = parsed.experience.find((e: any) => (e.company || '').toLowerCase().includes('independent software'));
+              if (indepExp && (!indepExp.bullets || indepExp.bullets.length < 5)) {
+                const sampleIndep = utshoBackendCV.experience.find(e => e.id === 'be-exp-2');
+                if (sampleIndep) {
+                  indepExp.bullets = sampleIndep.bullets;
+                }
+              }
+            }
+          }
           return parsed;
         }
       }
